@@ -17,6 +17,7 @@ class MinistryPlatformTableAPI
     protected $filter = null;
     protected $orderby = null;
     protected $skip = 0;
+    protected $groupby = null;
 
     protected $recordID = null;
 
@@ -31,7 +32,7 @@ class MinistryPlatformTableAPI
     private $headers;
 
     private $errorMessage = null;
-    
+
     /**
      * Set basic variables.
      *
@@ -102,6 +103,19 @@ class MinistryPlatformTableAPI
     }
 
     /**
+     * Set the group by clause for the GET request
+     *
+     * @param $order
+     * @return $this
+     */
+    public function groupBy($group)
+    {
+        $this->groupby = $group;
+
+        return $this;
+    }
+
+    /**
      * Set the records
      * @param $records
      * @return $this
@@ -134,9 +148,9 @@ class MinistryPlatformTableAPI
 
     /**
      * Request data 1000 rows at a time until all data has been retrieved
-     * The JSON API returns a max of 1000 records per request.  Use 
+     * The JSON API returns a max of 1000 records per request.  Use
      * the $skip to move the results window 1000 records at a time.
-     * 
+     *
      */
     private function getResults($endpoint)
     {
@@ -153,7 +167,9 @@ class MinistryPlatformTableAPI
                     'query' => ['$select' => $this->select,
                         '$filter' => $this->filter,
                         '$orderby' => $this->orderby,
-                        '$skip' => $this->skip],
+                        '$skip' => $this->skip,
+                        '$groupby' => $this->groupby
+                      ],
                     'curl' => $this->setGetCurlopts(),
                 ]);
 
@@ -170,7 +186,7 @@ class MinistryPlatformTableAPI
             }
 
             $r = json_decode($response->getBody(), true);
-            
+
             // Get the number of rows returned
             $num = count($r);
 
@@ -243,7 +259,7 @@ class MinistryPlatformTableAPI
         try {
 
             $response = $client->request('DELETE', $endpoint, [
-                'headers' => $this->headers,                
+                'headers' => $this->headers,
                 'curl' => $this->setGetCurlopts(),
             ]);
 
@@ -301,7 +317,7 @@ class MinistryPlatformTableAPI
         return $results = json_decode($response->getBody(), true);
     }
 
-  
+
     /**
      * Construct the API Endpoint for the request
      *
@@ -311,7 +327,7 @@ class MinistryPlatformTableAPI
     {
         return $this->apiEndpoint . '/tables/' . $this->tableName . '/';
     }
-   
+
     private function buildHttpHeader()
     {
         // Set the header
