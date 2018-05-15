@@ -18,6 +18,7 @@ class MinistryPlatformTableAPI
     protected $orderby = null;
     protected $skip = 0;
     protected $groupby = null;
+    protected $having = null;
 
     protected $recordID = null;
 
@@ -116,6 +117,19 @@ class MinistryPlatformTableAPI
     }
 
     /**
+     * Set the having clause for the GET request
+     *
+     * @param $order
+     * @return $this
+     */
+    public function having($having)
+    {
+        $this->having = $having;
+
+        return $this;
+    }
+
+    /**
      * Set the records
      * @param $records
      * @return $this
@@ -168,7 +182,8 @@ class MinistryPlatformTableAPI
                         '$filter' => $this->filter,
                         '$orderby' => $this->orderby,
                         '$skip' => $this->skip,
-                        '$groupby' => $this->groupby
+                        '$groupby' => $this->groupby,
+                        '$having' => $this->having,
                       ],
                     'curl' => $this->setGetCurlopts(),
                 ]);
